@@ -1,0 +1,8 @@
+#!/bin/bash
+
+ALL_GO_FILES=`find -type f -name \*.go`
+for A_FILE in ${ALL_GO_FILES}
+do
+    echo "Processing: ${A_FILE}"
+    gofmt -w -s "${A_FILE}"
+done

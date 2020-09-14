@@ -1,0 +1,41 @@
+#!/bin/bash
+SCRIPT_NAME="${0}"
+
+ALL_FILES=`ls *.go`
+
+while (( "$#" ))
+do
+    ARGUMENT="${1}"
+    case "${ARGUMENT}" in
+        "--help")
+            printHelp
+            exit 0
+            ;;
+
+        "--all")
+            ALL_FILES=`find -type f -name \*.go`
+            ;;
+    esac
+done
+
+function printHelp()
+    {
+    printf "${SCRIPT_NAME} <options>\n"
+    printf "\n"
+    printf "Options may be one or more of the following:\n"
+    printf "    --all      Process all files under the directory and its sub-directories"
+    printf "    --help     Show this screen\n"
+    }
+
+for A_GO_FILE in `ls *.go`
+do
+    printf "Processing: ${A_GO_FILE}\n"
+    golint "${A_GO_FILE}"
+    result=$?
+    if [ ${result} -ne 0 ]; then
+        printf "Linting error found - exit code ${result}\n"
+        exit 1
+    fi
+
+    gofmt -w "${A_GO_FILE}"
+done
